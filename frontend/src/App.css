@@ -1,0 +1,77 @@
+.splashscreen {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(0deg, #ff6036, #fd277a) no-repeat 50% fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.5s ease-in-out;
+  opacity: 1;
+  animation: splashscreen 0.3s ease-in-out 1.5s forwards;
+}
+
+.splashscreen img {
+  width: 64px;
+  height: auto;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes splashscreen {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    display: none;
+    pointer-events: none;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+::-webkit-scrollbar {
+    width: 20px;
+    position: absolute;
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+    backdrop-filter: blur(12px);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #c7c8d1cc;
+    backdrop-filter: blur(12px);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #c7c8d1cc;
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #c7c8d1cc;
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    border: 6px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #20254ccc;
+}
