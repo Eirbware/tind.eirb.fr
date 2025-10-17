@@ -1,6 +1,8 @@
 # Tind'eirb
 
 Application PocketBase - Vite + React pour shotgun son fillot à la rentrée. 
+Cette application, originalement réécrite par Benjamin Grolleau, a été mise open source 
+afin de faire en sorte que n'importe qui puisse l'améliorer
 
 ## Fonctionnalités
 - Mise à jour en temps réel sans raffraichissement.
