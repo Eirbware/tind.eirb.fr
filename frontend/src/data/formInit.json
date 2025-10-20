@@ -1,0 +1,175 @@
+[
+  {
+    "type": "text", 
+    "question": [
+      "Salut {fillotName} !",
+      "Dis-moi, c'est quoi ton petit surnom ?"
+    ]
+  }, 
+  {
+    "type": "qcm", 
+    "question": "Bon, pour commencer, quelle est la meilleure filière selon toi ?",
+    "option": [
+      "Matmécouilles",
+      "Electrocon",
+      "Telecon",
+      "Informabite",
+      "Système des zanimo embarqué",
+      "Zanimo et informatique"
+    ]
+  }, 
+  {
+    "type": "text", 
+    "question": [
+      "Tu as bien raison, c'est eux les boss !",
+      "Parle-moi un peu de toi, d'où tu viens exactement ?"
+    ]
+  }, 
+  {
+    "type": "text", 
+    "question": "Ok sympa, quelle formation tu as faite pour finir ici ?"
+  }, 
+  {
+    "type": "qcm", 
+    "question": "Et donc pourquoi tu as choisi l'ENSEIRB ?", 
+    "option" : [
+      "J'aime le vin",
+      "J'ai foiré mes concours",
+      "J'aime bien l'ambiance de l'école",
+      "Je ne sais pas ce que je fous ici"
+    ]
+  },
+  {
+    "type": "text", 
+    "question": [
+      "On fait tous des choix étranges dans la vie de toute façon",
+      "Tu as des passions dans la vie ?"
+    ]
+  },
+  {
+    "type": "text", 
+    "question": [
+      "Oh, trop bien !",
+      "Et tu fais du sport un peu ?"
+    ]
+  },
+  {
+    "type": "text", 
+    "question": [
+      "Pas mal ! Tu verras, il y a beaucoup de sports universitaires sur le campus si tu le souhaites",
+      "Mais est-ce que tu écoutes de la musique ? Donne-moi quelques exemples pour voir"
+    ]
+  }, 
+  {
+    "type": "text", 
+    "question": [
+      "Oh je sens que l'on va bien s'entendre toi et moi !",
+      "Est-ce que tu as une citation préférée ?"
+    ]
+  }, 
+  {
+    "type": "text", 
+    "question": [
+      "Intéressant",
+      "Dis-moi, dans la vie c'est quoi ton objectif ?"
+    ]
+  },
+  {
+    "type": "qcm", 
+    "question": "Bon, maintenant que j'en sais un peu plus sur toi, je vais te poser quelques questions sur l'associatif de l'école. Déjà, BDE >> BAR, tu en penses quoi ?",
+    "option" : ["C'est qui le BAR ?"]
+  },
+  {
+    "type": "text", 
+    "question": [
+      "Ca c'est ce que j'aime entendre !",
+      "Si tu as déjà des idées, de quelle(s) association(s) tu aimerais faire partie ?"
+    ]
+  },
+  {
+    "type": "qcm", 
+    "question": "N'hésite pas à aller les voir, ils seront contents de t'en parler ! Sinon pour cette année, tu penses que ça va se passer comment ?",
+    "option" : [
+      "Pas de rattrapages",
+      "Quelques rattrapages",
+      "L'ENSEIRB c'est en 4 ans"
+    ]
+  },
+  {
+    "type": "text",
+    "question": [
+        "Tu sais ce que c’est qu’une brasse, voilà : ",
+        "Tu glandes dans un bistrot parisien crasseux, un café tiède à la main, cerné par des wannabe politologues qui s’égosillent sur le gouvernement. Ça braille, ça gesticule, un vrai cirque. Tout à coup, François Bayrou, le roi du Béarn, déboule comme un taureau, écharpe tricolore en bandoulière, suivi de sa garde rapprochée, tous l’air de sortir d’une réunion de crise à Pau. « Fini le bordel, place au bon sens centriste ! » beugle-t-il, brandissant un programme plus flou qu’un brouillard pyrénéen.",
+        "En un éclair, c’est l’apocalypse : les tables volent, les arguments s’entrechoquent, et un plateau de croissants part en missile. T’en prends un en pleine tronche, et boum, te voilà projeté à travers la vitrine, atterrissant dans une ruelle où flotte une odeur de désillusion politique.",
+        "Dans tes poches, tu trouves une écharpe tricolore en lambeaux, un croissant réduit en poussière et trois pièces de 2 euros ornées d’un coq fatigué." ,
+        "Quel est ton plan ?"
+    ]
+  },
+  {
+    "type": "qcm", 
+    "question": "Au hasard comment tu décrirais ta relation avec l'alcool ?", 
+    "option" : [
+      "Fusionnelle",
+      "Toxique",
+      "De temps en temps",
+      "Je ne bois pas"
+    ]
+  },
+  {
+    "type": "qcm", 
+    "question": "Et est-ce que tu fumes ?", 
+    "option": [
+      "Oui",
+      "Non",
+      "La Marie Jeanne"
+    ]
+  },
+  {
+    "type": "qcm", 
+    "question": "Pour toi le parrain idéal il fait quoi ?", 
+    "option": [
+      "Bois des boissons houblonnées avec moi",
+      "M'aide pour les révisions",
+      "N'est pas contre une partie de jeux vidéo avec moi",
+      "Est toujours dispo pour faire du sport",
+      "N'est pas contre une bonne partie de cartes",
+      "Chill, passe du bon temps avec moi"
+    ]
+  },
+  {
+    "type": "qcm", 
+    "question": "Dis-moi, tu préfères un parrain ou une marraine ?", 
+    "option": [
+      "Parrain",
+      "Marraine",
+      "Peu importe", 
+      "Un cheval"
+    ]
+  },
+  {
+    "type": "text", 
+    "question": [
+      "Mais dis moi, c'est quoi ta meilleure anecdote ?"
+    ]
+  },
+  {
+    "type": "text", 
+    "question": [
+      "Pour finir, j'aimerais te poser une question un peu plus personnelle",
+      "Quel est ton plus grand fantasme ?"
+    ]
+  },
+  {
+    "type": "text", 
+    "question": "Comment ça mon reuf ?"
+  },
+  {
+    "type": "text", 
+    "question": [
+      "Ca restera entre toi et moi tkt",
+      "Merci d'avoir répondu à mes questions",
+      "Il ne te reste plus qu'à attendre que je te recontacte",
+      "À la prochaine !"
+    ]
+  }
+]
