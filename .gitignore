@@ -1,4 +1,5 @@
 # RGPD
+backend/pb_hooks/derogation.csv
 backend/pb_hooks/shotgun_groups.csv
 frontend/public/img/members/*.jpg
 frontend/public/img/members/*.png

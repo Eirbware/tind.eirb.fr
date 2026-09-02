@@ -52,6 +52,11 @@ Puis éditer le nouveau fichier.
 cp ./backend/pb_hooks/shotgun_groups.csv{.example,} && vim ./backend/pb_hooks/shotgun_groups.csv
 ```
 
+De même avec les dérogations
+```sh
+cp ./backend/pb_hooks/derogations.csv{.example,} && vim ./backend/pb_hooks/derogations.csv
+```
+
 Ajouter les photos que vous souhaitez mettre en avant sur le site dans le dossier `./frontend/public/img/members`.
 
 

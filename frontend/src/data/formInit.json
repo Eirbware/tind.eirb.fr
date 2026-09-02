@@ -80,9 +80,16 @@
     "option" : ["Le BAR ? C'est qui ceux-là ?"]
   },
   {
+    "type": "qcm", 
+    "question": "Nan premier degré, tu préfères quoi ?",
+    "option" : [
+      "Les travailleurs à plein temps du BDE", 
+    "Les intermittants du spectacle du BAR"]
+  },
+  {
     "type": "text", 
     "question": [
-      "Ca c'est ce que j'aime entendre !",
+      "Dans tous les cas tu vas kiffer !",
       "Si tu as déjà des idées, de quelle(s) association(s) tu aimerais faire partie ?"
     ]
   },
@@ -121,7 +128,7 @@
     "question": "Et est-ce que tu fumes ?", 
     "option": [
       "Vrai pompier",
-      "Je suis peuf goût pa...",
+      "Je suis peuf goût paff",
       "Non",
       "La Marie Jeanne"
     ]
@@ -146,7 +153,8 @@
       "Parrain",
       "Marraine",
       "Peu importe", 
-      "Un cheval"
+      "Tung tung tung Sahur",
+      "Un hélicoptère A630 de combat"
     ]
   },
   {
