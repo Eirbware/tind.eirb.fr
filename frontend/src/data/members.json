@@ -1,0 +1,194 @@
+[
+    {
+        "name": "Amandine",
+        "age": 23,
+        "photo": "./img/members/amandine.jpg",
+        "id": "amandine"
+    },
+    {
+        "name": "Arthur",
+        "age": 21,
+        "photo": "./img/members/arthur.jpg",
+        "id": "arthur"
+    },
+    {
+        "name": "Élise",
+        "age": 22,
+        "photo": "./img/members/elise.jpg",
+        "id": "elise"
+    },
+    {
+        "name": "Tom",
+        "age": 23,
+        "photo": "./img/members/tom1.jpg",
+        "id": "tom1"
+    },
+    {
+        "name": "Julie",
+        "age": 22,
+        "photo": "./img/members/julie.jpg",
+        "id": "julie"
+    },
+    {
+        "name": "Romain",
+        "age": 22,
+        "photo": "./img/members/romain.jpg",
+        "id": "romain"
+    },
+    {
+        "name": "Angel",
+        "age": 22,
+        "photo": "./img/members/angel.jpg",
+        "id": "angel"
+    },
+    {
+        "name": "Nathan",
+        "age": 21,
+        "photo": "./img/members/nathan.jpg",
+        "id": "nathan"
+    },
+    {
+        "name": "Mathias",
+        "age": 21,
+        "photo": "./img/members/mathias.jpg",
+        "id": "mathias"
+    },
+    {
+        "name": "Alexandre",
+        "age": 23,
+        "photo": "./img/members/alexandre.jpg",
+        "id": "alexandre"
+    },
+    {
+        "name": "Florian",
+        "age": 24,
+        "photo": "./img/members/florian.jpg",
+        "id": "florian"
+    },
+    {
+        "name": "Léo",
+        "age": 21,
+        "photo": "./img/members/leo.jpg",
+        "id": "leo"
+    },
+    {
+        "name": "Mathieu",
+        "age": 22,
+        "photo": "./img/members/mathieu1.jpg",
+        "id": "mathieu1"
+    },
+    {
+        "name": "Mathieu",
+        "age": 22,
+        "photo": "./img/members/mathieu2.jpg",
+        "id": "mathieu2"
+    },
+    {
+        "name": "Mathieu",
+        "age": 22,
+        "photo": "./img/members/mathieu3.jpg",
+        "id": "mathieu3"
+    },
+    {
+        "name": "Alycia",
+        "age": 23,
+        "photo": "./img/members/alycia.jpg",
+        "id": "alycia"
+    },
+    {
+        "name": "Luigi",
+        "age": 24,
+        "photo": "./img/members/luigi.jpg",
+        "id": "luigi"
+    },
+    {
+        "name": "Rakel",
+        "age": 24,
+        "photo": "./img/members/rakel.jpg",
+        "id": "rakel"
+    },
+    {
+        "name": "Yace",
+        "age": 4,
+        "photo": "./img/members/yace.jpg",
+        "id": "yace"
+    },
+    {
+        "name": "Mathis",
+        "age": 21,
+        "photo": "./img/members/mathis.jpg",
+        "id": "mathis"
+    },
+    {
+        "name": "Marie",
+        "age": 21,
+        "photo": "./img/members/marie.jpg",
+        "id": "marie"
+    },
+    {
+        "name": "Tom",
+        "age": 22,
+        "photo": "./img/members/tom2.jpg",
+        "id": "tom2"
+    },
+    {
+        "name": "Paul",
+        "age": 21,
+        "photo": "./img/members/paul.jpg",
+        "id": "paul"
+    },
+    {
+        "name": "Simon",
+        "age": 20,
+        "photo": "./img/members/simon.jpg",
+        "id": "simon"
+    },
+    {
+        "name": "Florent",
+        "age": 21,
+        "photo": "./img/members/florent.jpg",
+        "id": "florent"
+    },
+    {
+        "name": "Antoine",
+        "age": 21,
+        "photo": "./img/members/antoine.jpg",
+        "id": "antoine"
+    },
+    {
+        "name": "Ben",
+        "age": 21,
+        "photo": "./img/members/ben.jpg",
+        "id": "ben"
+    },
+    {
+        "name": "Fatih",
+        "age": 21,
+        "photo": "./img/members/fatih.jpg",
+        "id": "fatih"
+    },
+    {
+        "name": "Ganou",
+        "age": 21,
+        "photo": "./img/members/ganou.jpg",
+        "id": "ganou"
+    },
+    {
+        "name": "Aymeric",
+        "age": 21,
+        "photo": "./img/members/aymeric.jpg",
+        "id": "aymeric"
+    },
+    {
+        "name": "Anna",
+        "age": 21,
+        "photo": "./img/members/anna.jpg",
+        "id": "anna"
+    },
+    {
+        "name": "João",
+        "age": 22,
+        "photo": "./img/members/joao.jpg",
+        "id": "joao"
+    }
+]

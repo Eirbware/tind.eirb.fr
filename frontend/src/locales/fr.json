@@ -1,0 +1,68 @@
+{
+  "login": {
+    "logginIn": "En cours de connexion...",
+    "create": "Créer ton compte !",
+    "login": "Me connecter !",
+    "title": {
+      "1": "Découvrez",
+      "2": "votre binôme"
+    },
+    "CGU": {
+      "1": "En vous connectant, vous autorisez ce site à utiliser vos données CAS",
+      "2": "telles que votre email étudiant, votre login CAS, et votre filière."
+    },
+    "footer": "Les photos mettent en scène des enseirbien.ne.s, et sont exclusivement utilisées à des fins d'illustration.",
+    "mention": {
+      "1": "Hé, t’es célibat'eirb ? Tu cherches un fillot, une fillote, ou même un parrain ou une marraine ? C’est sur Tind'eirb que ça se passe. Avec déjà plus de 10 000 ingénieurs diplômés depuis 1920, l'ENSEIRB-MATMECA est un très bon plan pour trouver ton ou ta prochaine fillot.e ou parrain/marraine. Que tu sois de R&I, d'Informatique, d'Électronique, de Matméca, de Télécom ou encore de SEE, tu trouveras forcément ton bonheur.",
+      "2": "Tind'eirb est une application de rencontre pour les futurs ingénieurs de l'ENSEIRB-MATMECA. Elle permet de les mettre en relation avec leurs futurs fillot.e.s ou parrains/marraines en fonction de leurs centres d'intérêt, leurs passions, leurs projets, leurs envies, etc.",
+      "copyleft": "2025 Pôle Web BDE. Aucun droit réservé."
+    }
+  },
+  "parrain": {
+    "logout": "Me déconnecter !",
+    "search-bar": "Rechercher un nom ou des mots-clés",
+    "tab": {
+      "all": "Tous",
+      "favorites": "Favoris",
+      "mine": "Mes Fillot.e.s"
+    },
+    "actions": {
+      "addFavorite": "Ajouter aux favoris",
+      "removeFavorite": "Retirer des favoris",
+      "adopted": {
+        "none": "Vous avez adopté cet.te enseirbien.ne",
+        "M": "Vous avez adopté ce fillot",
+        "F": "Vous avez adopté cette fillote"
+      },
+      "orphan": "recherche un parrain ou une marraine",
+      "adoptedByColleague": {
+        "none": "a été adopté.e par un de vos collègues",
+        "M": "a été adopté par un de vos collègues",
+        "F": "a été adoptée par un de vos collègues"
+      }
+    },
+    "notifications": {
+      "favoriteAdded": "Ajouté aux favoris",
+      "favoriteRemoved": "Retiré des favoris"
+    },
+    "discussion": {
+      "noInfos": "Aucunes informations disponibles ...",
+      "tooOld": "Tu ne peux pas adopter de fillot.e.s car tu es trop vieux ...",
+      "alreadyYour": {
+        "none": "est déjà ton/ta fillot.e",
+        "F": "est déjà ta fillote",
+        "M": "est déjà ton fillot"
+      },
+      "adoptedByColleague": "a déjà été adopté par quelqu'un d'autre !",
+      "adoptIn": {
+        "0": "Tu pourras adopter",
+        "1": " dans "
+      },
+      "adopt": "Adopter",
+      "tooMuch": {
+        "0": "Tu ne peux pas adopter",
+        "1": " car tu as déjà adopté "
+      }
+    }
+  }
+}
