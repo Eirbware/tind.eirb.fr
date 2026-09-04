@@ -2,7 +2,7 @@ routerAdd("GET", "/api/auth/cas", (c) => {
   let ticket = c.queryParam("ticket");
   let redirectUrl = c.queryParam("redirectUrl");
 
-  const TINDEIRB_OPEN = new Date("2025-09-06T10:00:00");
+  const TINDEIRB_OPEN = new Date("2026-09-05T10:00:00");
 
   function getTimeRemaining(targetDate) {
     const now = new Date();
@@ -19,38 +19,37 @@ routerAdd("GET", "/api/auth/cas", (c) => {
     return { days, hours, minutes };
   }
 
-  if(getTimeRemaining(TINDEIRB_OPEN)){
+  if (getTimeRemaining(TINDEIRB_OPEN)) {
     return c.json(403, {
-    status: "error",
-    message: `Tind'eirb ouvrira le Samedi 6 Septembre à 10h00 !`
-  });
+      status: "error",
+      message: `Tind'eirb ouvrira le Samedi 5 Septembre à 10h00 !`,
+    });
   }
 
   if (
-    !ticket || typeof ticket !== 'string' ||
-    !redirectUrl || typeof redirectUrl !== 'string'
-  ){
+    !ticket ||
+    typeof ticket !== "string" ||
+    !redirectUrl ||
+    typeof redirectUrl !== "string"
+  ) {
     return c.json(400, {
-      status: "error", 
-      message: "Requête invalide"
-    });    
+      status: "error",
+      message: "Requête invalide",
+    });
   }
 
-  const CAS_PROXY_URL = "https://cas.serveur-bde.eirb.fr/?token=";
-  const serviceUrl = `${CAS_PROXY_URL}${redirectUrl}`;
+  const serviceURL = encodeURIComponent("http://localhost.eirb.fr:5173");
 
   let res = $http.send({
-    url: `https://cas.bordeaux-inp.fr/serviceValidate?service=${encodeURIComponent(
-      serviceUrl
-    )}&ticket=${ticket}&format=json`,
+    url: `https://cas.bordeaux-inp.fr/serviceValidate?service=${serviceURL}&ticket=${ticket}&format=json`,
     method: "GET",
   });
 
   let response = res.json;
   if (!("authenticationSuccess" in response.serviceResponse)) {
     return c.json(401, {
-      status: "error", 
-      message: "Ticket CAS invalide", 
+      status: "error",
+      message: "Ticket CAS invalide",
       response,
     });
   }
@@ -65,102 +64,133 @@ routerAdd("GET", "/api/auth/cas", (c) => {
   const group = data.attributes.diplome[0].slice(0, -1);
   const level = data.attributes.diplome[0].slice(-1);
 
-  const yearDiff = currentSchoolYear - parseInt(data.attributes.supannEtuAnneeInscription[0]);
-  const yearNumber = yearDiff + parseInt(level);
+  // does not exist console.log(data.attributes.supannEtuAnneeInscription);
+  // const yearDiff = currentSchoolYear - parseInt(data.attributes.supannEtuAnneeInscription[0]);
+  const yearNumber = /*yearDiff + */ parseInt(level);
 
-  data.attributes.diplome = [ group + yearNumber ];
+  data.attributes.diplome = [group + yearNumber];
 
   const extractCsvToJSON = (filePath) => {
-    const fs = require('fs');
-    var Document = fs.readFileSync(filePath).toString().split('\r\n');
-    var Titles = Document[0].split(',');
-    var Json = [];
-    for (var i = 0; i < Document.length; i++) {
-      var Data = {};
-      var Element = Document[i].split(',');
-      for (var j = 0; j < Element.length; j++) 
-        Data[Titles[j]] = Element[j];
-      Json.push(Data);
+    try {
+      var Document = String.fromCharCode
+        .apply(null, $os.readFile(filePath))
+        .split("\n");
+      var Titles = Document[0].split(",");
+      var Json = [];
+      for (var i = 0; i < Document.length; i++) {
+        var Data = {};
+        var Element = Document[i].split(",");
+        for (var j = 0; j < Element.length; j++) Data[Titles[j]] = Element[j];
+        Json.push(Data);
+      }
+      return Json;
+    } catch (e) {
+      console.log(e);
+      return {};
     }
-    return Json;
-  }
+  };
 
-  const derogations = extractCsvToJSON("derogations.csv");
-  const derogationFound = derogations.find((a) => a.CAS === username);
-  if (derogationFound) {
-    data.attributes.diplome = [derogations[derogationFound].Diplome];
+  const derogations = extractCsvToJSON("./pb_hooks/derogations.csv");
+  try {
+    const derogationFound = derogations.find((a) => a.CAS === username);
+    if (derogationFound) {
+      data.attributes.diplome = [derogations[derogationFound].Diplome];
+    }
+  } catch (e) {
+    console.log(e);
   }
 
   const AUTHORIZED_DIPLOMAS = [
-    "IIEIN3", "IIEIN4", "IIEIN5",  // Infos 
-    "IIETE3", "IIETE4", "IIETE5",  // Telecom
-    "IIEMM3", "IIEMM4", "IIEMM5",  // MMK
-    "IIEEL3", "IIEEL4", "IIEEL5",  // Elec
-    "IAERI3", "IAERI4", "IAERI5",  // R&I
-    "IAESE3", "IAESE4", "IAESE5"   // SEE
-  ] 
+    "IIEIN3", "IIEIN4", "IIEIN5", // Infos
+    "IIETE3", "IIETE4", "IIETE5", // Telecom
+    "IIEMM3", "IIEMM4", "IIEMM5", // MMK
+    "IIEEL3", "IIEEL4", "IIEEL5", // Elec
+    "IAERI3", "IAERI4", "IAERI5", // R&I
+    "IAESE3", "IAESE4", "IAESE5", // SEE
+  ];
 
-  if (!AUTHORIZED_DIPLOMAS.includes(data.attributes.diplome.join(""))) {
-    return c.json(403, {
-      status: "error", 
-      message: "Vous n'êtes pas autorisé à vous connecter, seuls les 1A, 2A et 3A ont accès à cette application"
-    })
+  try {
+    if (!AUTHORIZED_DIPLOMAS.includes(data.attributes.diplome.join(""))) {
+      return c.json(403, {
+        status: "error",
+        message:
+          "Vous n'êtes pas autorisé à vous connecter, seuls les 1A, 2A et 3A ont accès à cette application",
+      });
+    }
+  } catch (e) {
+    console.log(e);
   }
 
   const extractCsvToArray = (filePath) => {
-    const fs = require('fs');
-    var Document = fs.readFileSync(filePath).toString().split('\r\n');
-    var Titles = Document[0].split(',');
-    Document.shift();
-    var Dict = {};
-    for (var i = 0; i < Document.length; i++) {
-      var Element = Document[i].split(',');
-      for (var j = 0; j < Element.length; j++) {
-        if (Titles[j] in Dict) 
-          Dict[Titles[j]].push(Element[j]);
-        else 
-          Dict[Titles[j]] = [Element[j]];
+    try {
+      var content = String.fromCharCode
+        .apply(null, $os.readFile(filePath))
+        .split("\n");
+      var Document = content;
+      var Titles = Document[0].split(",");
+      Document.shift();
+      var Dict = {};
+      for (var i = 0; i < Document.length; i++) {
+        var Element = Document[i].split(",");
+        for (var j = 0; j < Element.length; j++) {
+          if (Titles[j] in Dict) Dict[Titles[j]].push(Element[j]);
+          else Dict[Titles[j]] = [Element[j]];
+        }
+        return Dict;
+      }
+    } catch (e) {
+      console.log(e);
+      return {};
     }
-    return Dict;
-    }
-  }
-  const groupes = extractCsvToArray("shotgun_groups.csv");
+  };
+  const groupes = extractCsvToArray("./pb_hooks/shotgun_groups.csv");
 
   // WARNING: Les heures sont au format UTC donc heure reel = heure + 2
   const SHOTGUN_WAVES = {
-    "2025-09-06 09:00:00": groupes.WEB,
-    "2025-09-15 14:50:00": groupes.BUREAU_BDE, 
-    "2025-09-15 15:00:00": groupes.BDE, 
-    "2025-09-15 15:30:00": groupes.BAR, 
-    "2025-09-15 15:45:00": groupes.BUREAU_BAE, 
-    "2025-09-15 16:00:00": [...groupes.BDA, ...groupes.BDS],
-  }  
+    "2026-09-05 09:00:00": groupes.WEB,
+    "2026-09-14 14:50:00": groupes.BUREAU_BDE,
+    "2026-09-14 15:00:00": groupes.BDE,
+    "2026-09-14 15:30:00": groupes.BAR,
+    "2026-09-14 15:45:00": groupes.BUREAU_BAE,
+    "2026-09-14 16:00:00": [...groupes.BDA, ...groupes.BDS],
+  };
 
-  const SHOTGUNW_DATE_FOR_OTHERS = "2025-09-15 17:00:00";
+  const SHOTGUNW_DATE_FOR_OTHERS = "2026-09-14 17:00:00";
 
-  var shotgunDate = SHOTGUNW_DATE_FOR_OTHERS;
-  for (const [date, usernames] of Object.entries(SHOTGUN_WAVES)) {
-    if (usernames.includes(username)) {
-      shotgunDate = date;
-      break;
+  try {
+    var shotgunDate = SHOTGUNW_DATE_FOR_OTHERS;
+    for (const [date, usernames] of Object.entries(SHOTGUN_WAVES)) {
+      if (usernames.includes(username)) {
+        shotgunDate = date;
+        break;
+      }
     }
+  } catch (e) {
+    console.log(e);
   }
 
   const generatePassword = () => {
     const length = 16;
-    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const charset =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let retVal = "";
     for (let i = 0, n = charset.length; i < length; ++i) {
       retVal += charset.charAt(Math.floor(Math.random() * n));
     }
     return retVal;
-  }
+  };
   const users = arrayOf(new Record());
-  $app.dao()
-    .recordQuery("users")
-    .where($dbx.exp("username = {:username}", {username}))
-    .all(users);
+  try {
+    $app
+      .dao()
+      .recordQuery("users")
+      .where($dbx.exp("username = {:username}", { username }))
+      .all(users);
+  } catch (e) {
+    console.log(e);
+  }
 
+  console.log("aaaa");
   var user = null;
   if (users.length > 0) {
     // User already exist so update it
@@ -178,103 +208,117 @@ routerAdd("GET", "/api/auth/cas", (c) => {
   user.set("lastName", data.attributes.nom.join(" "));
   user.set("diploma", data.attributes.diplome.join(" "));
   user.set("shotgunDate", shotgunDate);
-  $app.dao().saveRecord(user);
+  try {
+    $app.dao().saveRecord(user);
+  } catch (e) {
+    console.log(e);
+  }
 
   return c.json(200, {
-    status: "success", 
-    username, 
-    password, 
+    status: "success",
+    username,
+    password,
     diplome: data.attributes.diplome[0],
   });
-})
+});
 
 routerAdd("GET", "/api/fillots", (c) => {
   let idParrain = c.queryParam("idParrain");
-  
-  if (!idParrain || typeof idParrain !== 'string') {
+
+  if (!idParrain || typeof idParrain !== "string") {
     return c.json(400, {
-      status: "error", 
-      message: "Requête invalide"
+      status: "error",
+      message: "Requête invalide",
     });
   }
 
   const parrain = $app.dao().findRecordById("users", idParrain);
-  
-   if (!parrain) {
+
+  if (!parrain) {
     return c.json(404, {
       status: "error",
-      message: "Parrain introuvable"
+      message: "Parrain introuvable",
     });
   }
 
   const parrainDiploma = parrain.get("diploma");
-  
+
   const fillots = arrayOf(new Record());
   const fillotDiploma = parrainDiploma.slice(0, -1) + "3";
 
+  try {
+    $app
+      .dao()
+      .recordQuery("users")
+      .where($dbx.exp("diploma = {:fillotDiploma}", { fillotDiploma }))
+      .all(fillots);
+  } catch (e) {
+    console.log(e);
+  }
 
-  $app.dao()
-    .recordQuery("users")
-    .where($dbx.exp("diploma = {:fillotDiploma}", {fillotDiploma}))
-    .all(fillots);
-
-  const fillotResponse = fillots.map(fillot => ({
-    id: fillot.get("id"), 
+  const fillotResponse = fillots.map((fillot) => ({
+    id: fillot.get("id"),
     firstName: fillot.get("firstName"),
     lastName: fillot.get("lastName"),
     diploma: fillot.get("diploma"),
-    parrain: fillot.get("parrain"), 
+    parrain: fillot.get("parrain"),
     infos: fillot.get("infos"),
   }));
 
   return c.json(200, {
-    status: "success", 
-    fillots: fillotResponse
+    status: "success",
+    fillots: fillotResponse,
   });
 });
 
 routerAdd("GET", "/api/nbFillots", (c) => {
   let id = c.queryParam("id");
-  if (!id | typeof id !== 'string') {
+  if (!id | (typeof id !== "string")) {
     return c.json(400, {
-      status: "error", 
-      message: "Requête invalide"
+      status: "error",
+      message: "Requête invalide",
     });
   }
 
   const fillots = arrayOf(new Record());
-  $app.dao()
-    .recordQuery("users") 
-    .where($dbx.exp("parrain = {:id}", {id}))
+  $app
+    .dao()
+    .recordQuery("users")
+    .where($dbx.exp("parrain = {:id}", { id }))
     .all(fillots);
 
   return c.json(200, {
-    status: "success", 
-    nbfillots: fillots.length
-  })
- 
-})
+    status: "success",
+    nbfillots: fillots.length,
+  });
+});
 
 cronAdd("hello", "*/1 * * * *", () => {
-    const config = arrayOf(new Record());
-    $app.dao()
-      .recordQuery("config")
-      .where($dbx.exp("key = {:key}", { key: "TIME" })) 
-      .all(config);
+  const config = arrayOf(new Record());
+  $app
+    .dao()
+    .recordQuery("config")
+    .where($dbx.exp("key = {:key}", { key: "TIME" }))
+    .all(config);
 
-    if (config.length > 0) {
-      const now = new Date();
-      const timezoneOffset = now.getTimezoneOffset() * 60000; 
-      const localISOTime = new Date(now - timezoneOffset).toISOString().slice(0, 19); 
+  if (config.length > 0) {
+    const now = new Date();
+    const timezoneOffset = now.getTimezoneOffset() * 60000;
+    const localISOTime = new Date(now - timezoneOffset)
+      .toISOString()
+      .slice(0, 19);
 
-      config[0].set("value", localISOTime);
+    config[0].set("value", localISOTime);
 
-      $app.dao().saveRecord(config[0]);
+    $app.dao().saveRecord(config[0]);
 
-      console.log("La clé 'TIME' a été mise à jour avec l'heure locale actuelle:", localISOTime);
-    } else {
-      console.log("La clé 'TIME' n'a pas été trouvée dans la table config.");
-    }
+    console.log(
+      "La clé 'TIME' a été mise à jour avec l'heure locale actuelle:",
+      localISOTime,
+    );
+  } else {
+    console.log("La clé 'TIME' n'a pas été trouvée dans la table config.");
+  }
 });
 
 routerAdd("POST", "/api/adoptFillot", (c) => {
@@ -282,10 +326,15 @@ routerAdd("POST", "/api/adoptFillot", (c) => {
   const idParrain = body.idParrain;
   const idFillot = body.idFillot;
 
-  if (!idParrain || typeof idParrain !== 'string' || !idFillot || typeof idFillot !== 'string') {
+  if (
+    !idParrain ||
+    typeof idParrain !== "string" ||
+    !idFillot ||
+    typeof idFillot !== "string"
+  ) {
     return c.json(400, {
       status: "error",
-      message: "Requête invalide"
+      message: "Requête invalide",
     });
   }
 
@@ -295,46 +344,59 @@ routerAdd("POST", "/api/adoptFillot", (c) => {
   if (!fillot || !parrain) {
     return c.json(404, {
       status: "error",
-      message: "Fillot ou Parrain introuvable"
+      message: "Fillot ou Parrain introuvable",
     });
   }
 
   if (fillot.get("parrain") !== "") {
     return c.json(400, {
       status: "error",
-      message: "Ce fillot a déjà un parrain."
+      message: "Ce fillot a déjà un parrain.",
     });
   }
 
-  const MAX_FILLOTS = parseInt($app.dao().findFirstRecordByData("config", "key", "MAX_FILLOTS").get("value"));
+  const MAX_FILLOTS = parseInt(
+    $app
+      .dao()
+      .findFirstRecordByData("config", "key", "MAX_FILLOTS")
+      .get("value"),
+  );
 
   const fillots = arrayOf(new Record());
-  $app.dao().recordQuery("users").where($dbx.exp("parrain = {:idParrain}", { idParrain })).all(fillots);
+  $app
+    .dao()
+    .recordQuery("users")
+    .where($dbx.exp("parrain = {:idParrain}", { idParrain }))
+    .all(fillots);
 
   if (fillots.length >= MAX_FILLOTS) {
     return c.json(400, {
       status: "error",
-      message: "Ce parrain a déjà trop de fillots."
+      message: "Ce parrain a déjà trop de fillots.",
     });
   }
-  
-  const now = new Date($app.dao().findFirstRecordByData("config", "key", "TIME").get("value")).toISOString();;
-  const shotgunDate = new Date(parrain.get("shotgunDate").toString().replace(" ", "T")).toISOString();
-  
+
+  const now = new Date(
+    $app.dao().findFirstRecordByData("config", "key", "TIME").get("value"),
+  ).toISOString();
+  const shotgunDate = new Date(
+    parrain.get("shotgunDate").toString().replace(" ", "T"),
+  ).toISOString();
+
   if (shotgunDate > now) {
     return c.json(400, {
       status: "error",
-      message: "La date de shotgun n'est pas encore passée."
-    })
+      message: "La date de shotgun n'est pas encore passée.",
+    });
   }
 
   const parrainFiliere = parrain.get("diploma").substring(0, 5);
   const fillotFiliere = fillot.get("diploma").substring(0, 5);
 
-   if (parrainFiliere !== fillotFiliere) {
-     return c.json(400, {
+  if (parrainFiliere !== fillotFiliere) {
+    return c.json(400, {
       status: "error",
-      message: "Le parrain et le fillot ne sont pas dans la même filière."
+      message: "Le parrain et le fillot ne sont pas dans la même filière.",
     });
   }
 
@@ -342,15 +404,15 @@ routerAdd("POST", "/api/adoptFillot", (c) => {
   if (parrainYear !== "4") {
     return c.json(400, {
       status: "error",
-      message: "Seuls les 2A peuvent parrainer."
+      message: "Seuls les 2A peuvent parrainer.",
     });
   }
 
   fillot.set("parrain", idParrain);
   $app.dao().saveRecord(fillot);
-  
+
   return c.json(200, {
     status: "success",
-    message: `Le fillot ${fillot.get("firstname")} ${fillot.get("lastname")} a été adopté par ${parrain.get("firstname")} ${parrain.get("lastname")}.`
+    message: `Le fillot ${fillot.get("firstname")} ${fillot.get("lastname")} a été adopté par ${parrain.get("firstname")} ${parrain.get("lastname")}.`,
   });
 });

@@ -32,8 +32,7 @@ const createCompleteUser = (partialUser: Partial<User> = {}): User => {
 const loginWithCas = (setLoading: React.Dispatch<React.SetStateAction<boolean>>) => {
   setLoading(true);
   const redirectUrl = window.location.href;
-  const serviceUrl = "https://cas.serveur-bde.eirb.fr/";
-  const encodedUrl = encodeURIComponent(`${serviceUrl}?token=${btoa(redirectUrl)}`);
+  const encodedUrl = encodeURIComponent(`${import.meta.env.VITE_API_URL}`);
   const authenticationCasUrl = `https://cas.bordeaux-inp.fr/login?service=${encodedUrl}`;
   window.location.href = authenticationCasUrl;
 }

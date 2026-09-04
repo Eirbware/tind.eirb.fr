@@ -11,6 +11,7 @@ export default defineConfig({
     postcss: './postcss.config.js',
   }, 
   server: {
+    allowedHosts: [ "localhost.eirb.fr" ],
     proxy: {
       '/api': {
         target: 'http://localhost:8090',

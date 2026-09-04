@@ -12,23 +12,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^8.2.2"
-  },
-  "dependencies": {
-    "@vitejs/plugin-react": "^5.0.4",
-    "vite": "^7.1.11",
-    "zustand": "^4.5.5",
-    "@dicebear/collection": "^9.2.1",
-    "@dicebear/core": "^9.2.1",
-    "daisyui": "^4.12.10",
-    "i18n": "^0.15.1",
-    "i18next": "^25.5.0",
-    "pocketbase": "^0.21.4",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-i18next": "^15.0.1"
-  },
-  "devDependencies": {
     "@eslint/js": "^9.9.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
@@ -43,5 +26,22 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.19"
+  },
+  "dependencies": {
+    "@dicebear/collection": "^9.2.1",
+    "@dicebear/core": "^9.2.1",
+    "@vitejs/plugin-react": "^5.0.4",
+    "concurrently": "^10.0.5",
+    "daisyui": "^4.12.10",
+    "dev": "^0.1.5",
+    "fs": "0.0.1-security",
+    "i18n": "^0.15.1",
+    "i18next": "^25.5.0",
+    "pocketbase": "^0.21.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-i18next": "^15.0.1",
+    "vite": "^7.1.11",
+    "zustand": "^4.5.5"
   }
 }
