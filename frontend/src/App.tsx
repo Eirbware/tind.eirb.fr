@@ -29,13 +29,9 @@ const createCompleteUser = (partialUser: Partial<User> = {}): User => {
 
 // Function to handle the CAS login process
 // It triggers the loading state and redirects the user to the CAS authentication page.
-const loginWithCas = (setLoading: React.Dispatch<React.SetStateAction<boolean>>) => {
+const loginWithCas = async (setLoading: React.Dispatch<React.SetStateAction<boolean>>) => {
   setLoading(true);
-  const redirectUrl = window.location.href;
-  const serviceUrl = "https://cas.serveur-bde.eirb.fr/";
-  const encodedUrl = encodeURIComponent(`${serviceUrl}?token=${btoa(redirectUrl)}`);
-  const authenticationCasUrl = `https://cas.bordeaux-inp.fr/login?service=${encodedUrl}`;
-  window.location.href = authenticationCasUrl;
+  await pb.collection('users').authWithOAuth2({ provider: 'oidc', scopes: ['openid', 'profile', 'email', "CAS"] });
 }
 
 function App() {

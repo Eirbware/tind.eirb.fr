@@ -1,3 +1,109 @@
+// gemini slop
+onRecordAuthRequest((e) => {
+  const parseGroups = (filePath) => {
+    try {
+      const lines = String.fromCharCode.apply(null, $os.readFile(filePath)).split('\n');
+      const headers = lines[0].split(',');
+      const acc = {};
+
+      for (let i = 1; i < lines.length; i++) {
+        const users = lines[i].split(',');
+
+        // min() to avoid having user = undefined
+        for (let j = 0 ; j < Math.min(headers.length, users.length) ; j++) {
+          const user = users[j].trim();
+          if (user === "")
+            continue;
+
+          acc[user] = headers[j];
+        }
+      }
+
+      return acc;
+    } catch (e) {
+      console.log(e);
+      return {};
+    }
+  }
+
+
+  // WARNING: Les heures sont au format UTC donc heure reel = heure + 2
+  const SHOTGUN_WAVES = {
+    WEB: "2025-09-06 09:00:00",
+    BUREAU_BDE: "2025-09-15 14:50:00",
+    BDE: "2025-09-15 15:00:00",
+    BAR: "2025-09-15 15:30:00",
+    BUREAU_BAE: "2025-09-15 15:45:00",
+    BDA: "2025-09-15 16:00:00",
+    BDS: "2025-09-15 16:00:00",
+  }
+
+  const SHOTGUNW_DATE_FOR_OTHERS = "2025-09-15 17:00:00";
+  const groupes = parseGroups("./pb_hooks/shotgun_groups.csv");
+
+  // e.meta contains the OAuth2 provider data (if it was an OAuth2 login)
+  if (e.meta && e.meta.rawUser) {
+    const claims = e.meta.rawUser;
+    let needsUpdate = false;
+
+    console.log(JSON.stringify(claims))
+
+    // Map your custom claims
+    if (claims.diplome) {
+      e.record.set("diploma", claims.diplome);
+
+      const AUTHORIZED_DIPLOMAS = [
+        "IIEIN3", "IIEIN4", "IIEIN5",  // Infos 
+        "IIETE3", "IIETE4", "IIETE5",  // Telecom
+        "IIEMM3", "IIEMM4", "IIEMM5",  // MMK
+        "IIEEL3", "IIEEL4", "IIEEL5",  // Elec
+        "IAERI3", "IAERI4", "IAERI5",  // R&I
+        "IAESE3", "IAESE4", "IAESE5"   // SEE
+      ];
+
+      if (!AUTHORIZED_DIPLOMAS.includes(claims.diplome)) {
+        return c.json(403, {
+          status: "error",
+          message: "Vous n'êtes pas autorisé à vous connecter, seuls les 1A, 2A et 3A ont accès à cette application"
+        })
+      }
+
+      needsUpdate = true;
+    }
+
+    if (claims.nom_complet) {
+      e.record.set("name", claims.nom_complet);
+      needsUpdate = true;
+    }
+
+    if (claims.prenom) {
+      e.record.set("firstName", claims.prenom);
+      needsUpdate = true;
+    }
+
+    if (claims.nom) {
+      e.record.set("lastName", claims.nom);
+      needsUpdate = true;
+    }
+
+    const group = groupes[e.record.get("username")] ?? null;
+    const shotgunDate = (group === null) ? SHOTGUNW_DATE_FOR_OTHERS : SHOTGUN_WAVES[group];
+
+    if (!e.record.get("shotgunDate") || e.record.get("shotgunDate") != shotgunDate) {
+      e.record.set("shotgunDate", shotgunDate);
+      needsUpdate = true;
+    }
+
+    console.log(needsUpdate, JSON.stringify(e.record));
+
+    // Because v0.22 runs this hook AFTER the user is saved,
+    // we must manually save the record to the database if we changed it.
+    if (needsUpdate) {
+      $app.dao().saveRecord(e.record);
+    }
+  }
+}, "users"); // Replace "users" with your collection name if different
+
 routerAdd("GET", "/api/auth/cas", (c) => {
   let ticket = c.queryParam("ticket");
   let redirectUrl = c.queryParam("redirectUrl");
@@ -19,38 +125,35 @@ routerAdd("GET", "/api/auth/cas", (c) => {
     return { days, hours, minutes };
   }
 
-  if(getTimeRemaining(TINDEIRB_OPEN)){
+  if (getTimeRemaining(TINDEIRB_OPEN)) {
     return c.json(403, {
-    status: "error",
-    message: `Tind'eirb ouvrira le Samedi 6 Septembre à 10h00 !`
-  });
+      status: "error",
+      message: `Tind'eirb ouvrira le Samedi 6 Septembre à 10h00 !`
+    });
   }
 
   if (
     !ticket || typeof ticket !== 'string' ||
     !redirectUrl || typeof redirectUrl !== 'string'
-  ){
+  ) {
     return c.json(400, {
-      status: "error", 
+      status: "error",
       message: "Requête invalide"
-    });    
+    });
   }
 
-  const CAS_PROXY_URL = "https://cas.serveur-bde.eirb.fr/?token=";
-  const serviceUrl = `${CAS_PROXY_URL}${redirectUrl}`;
+  const serviceURL = encodeURIComponent("http://localhost.eirb.fr:5173");
 
   let res = $http.send({
-    url: `https://cas.bordeaux-inp.fr/serviceValidate?service=${encodeURIComponent(
-      serviceUrl
-    )}&ticket=${ticket}&format=json`,
+    url: `https://cas.bordeaux-inp.fr/serviceValidate?service=${serviceURL}&ticket=${ticket}&format=json`,
     method: "GET",
   });
 
   let response = res.json;
   if (!("authenticationSuccess" in response.serviceResponse)) {
     return c.json(401, {
-      status: "error", 
-      message: "Ticket CAS invalide", 
+      status: "error",
+      message: "Ticket CAS invalide",
       response,
     });
   }
@@ -65,31 +168,11 @@ routerAdd("GET", "/api/auth/cas", (c) => {
   const group = data.attributes.diplome[0].slice(0, -1);
   const level = data.attributes.diplome[0].slice(-1);
 
+  // does not exist console.log(data.attributes.supannEtuAnneeInscription);
   const yearDiff = currentSchoolYear - parseInt(data.attributes.supannEtuAnneeInscription[0]);
   const yearNumber = yearDiff + parseInt(level);
 
-  data.attributes.diplome = [ group + yearNumber ];
-
-  const extractCsvToJSON = (filePath) => {
-    const fs = require('fs');
-    var Document = fs.readFileSync(filePath).toString().split('\r\n');
-    var Titles = Document[0].split(',');
-    var Json = [];
-    for (var i = 0; i < Document.length; i++) {
-      var Data = {};
-      var Element = Document[i].split(',');
-      for (var j = 0; j < Element.length; j++) 
-        Data[Titles[j]] = Element[j];
-      Json.push(Data);
-    }
-    return Json;
-  }
-
-  const derogations = extractCsvToJSON("derogations.csv");
-  const derogationFound = derogations.find((a) => a.CAS === username);
-  if (derogationFound) {
-    data.attributes.diplome = [derogations[derogationFound].Diplome];
-  }
+  data.attributes.diplome = [group + yearNumber];
 
   const AUTHORIZED_DIPLOMAS = [
     "IIEIN3", "IIEIN4", "IIEIN5",  // Infos 
@@ -98,43 +181,14 @@ routerAdd("GET", "/api/auth/cas", (c) => {
     "IIEEL3", "IIEEL4", "IIEEL5",  // Elec
     "IAERI3", "IAERI4", "IAERI5",  // R&I
     "IAESE3", "IAESE4", "IAESE5"   // SEE
-  ] 
+  ]
 
   if (!AUTHORIZED_DIPLOMAS.includes(data.attributes.diplome.join(""))) {
     return c.json(403, {
-      status: "error", 
+      status: "error",
       message: "Vous n'êtes pas autorisé à vous connecter, seuls les 1A, 2A et 3A ont accès à cette application"
     })
   }
-
-  const extractCsvToArray = (filePath) => {
-    const fs = require('fs');
-    var Document = fs.readFileSync(filePath).toString().split('\r\n');
-    var Titles = Document[0].split(',');
-    Document.shift();
-    var Dict = {};
-    for (var i = 0; i < Document.length; i++) {
-      var Element = Document[i].split(',');
-      for (var j = 0; j < Element.length; j++) {
-        if (Titles[j] in Dict) 
-          Dict[Titles[j]].push(Element[j]);
-        else 
-          Dict[Titles[j]] = [Element[j]];
-    }
-    return Dict;
-    }
-  }
-  const groupes = extractCsvToArray("shotgun_groups.csv");
-
-  // WARNING: Les heures sont au format UTC donc heure reel = heure + 2
-  const SHOTGUN_WAVES = {
-    "2025-09-06 09:00:00": groupes.WEB,
-    "2025-09-15 14:50:00": groupes.BUREAU_BDE, 
-    "2025-09-15 15:00:00": groupes.BDE, 
-    "2025-09-15 15:30:00": groupes.BAR, 
-    "2025-09-15 15:45:00": groupes.BUREAU_BAE, 
-    "2025-09-15 16:00:00": [...groupes.BDA, ...groupes.BDS],
-  }  
 
   const SHOTGUNW_DATE_FOR_OTHERS = "2025-09-15 17:00:00";
 
@@ -158,7 +212,7 @@ routerAdd("GET", "/api/auth/cas", (c) => {
   const users = arrayOf(new Record());
   $app.dao()
     .recordQuery("users")
-    .where($dbx.exp("username = {:username}", {username}))
+    .where($dbx.exp("username = {:username}", { username }))
     .all(users);
 
   var user = null;
@@ -181,26 +235,26 @@ routerAdd("GET", "/api/auth/cas", (c) => {
   $app.dao().saveRecord(user);
 
   return c.json(200, {
-    status: "success", 
-    username, 
-    password, 
+    status: "success",
+    username,
+    password,
     diplome: data.attributes.diplome[0],
   });
 })
 
 routerAdd("GET", "/api/fillots", (c) => {
   let idParrain = c.queryParam("idParrain");
-  
+
   if (!idParrain || typeof idParrain !== 'string') {
     return c.json(400, {
-      status: "error", 
+      status: "error",
       message: "Requête invalide"
     });
   }
 
   const parrain = $app.dao().findRecordById("users", idParrain);
-  
-   if (!parrain) {
+
+  if (!parrain) {
     return c.json(404, {
       status: "error",
       message: "Parrain introuvable"
@@ -208,27 +262,27 @@ routerAdd("GET", "/api/fillots", (c) => {
   }
 
   const parrainDiploma = parrain.get("diploma");
-  
+
   const fillots = arrayOf(new Record());
   const fillotDiploma = parrainDiploma.slice(0, -1) + "3";
 
 
   $app.dao()
     .recordQuery("users")
-    .where($dbx.exp("diploma = {:fillotDiploma}", {fillotDiploma}))
+    .where($dbx.exp("diploma = {:fillotDiploma}", { fillotDiploma }))
     .all(fillots);
 
   const fillotResponse = fillots.map(fillot => ({
-    id: fillot.get("id"), 
+    id: fillot.get("id"),
     firstName: fillot.get("firstName"),
     lastName: fillot.get("lastName"),
     diploma: fillot.get("diploma"),
-    parrain: fillot.get("parrain"), 
+    parrain: fillot.get("parrain"),
     infos: fillot.get("infos"),
   }));
 
   return c.json(200, {
-    status: "success", 
+    status: "success",
     fillots: fillotResponse
   });
 });
@@ -237,44 +291,44 @@ routerAdd("GET", "/api/nbFillots", (c) => {
   let id = c.queryParam("id");
   if (!id | typeof id !== 'string') {
     return c.json(400, {
-      status: "error", 
+      status: "error",
       message: "Requête invalide"
     });
   }
 
   const fillots = arrayOf(new Record());
   $app.dao()
-    .recordQuery("users") 
-    .where($dbx.exp("parrain = {:id}", {id}))
+    .recordQuery("users")
+    .where($dbx.exp("parrain = {:id}", { id }))
     .all(fillots);
 
   return c.json(200, {
-    status: "success", 
+    status: "success",
     nbfillots: fillots.length
   })
- 
+
 })
 
 cronAdd("hello", "*/1 * * * *", () => {
-    const config = arrayOf(new Record());
-    $app.dao()
-      .recordQuery("config")
-      .where($dbx.exp("key = {:key}", { key: "TIME" })) 
-      .all(config);
+  const config = arrayOf(new Record());
+  $app.dao()
+    .recordQuery("config")
+    .where($dbx.exp("key = {:key}", { key: "TIME" }))
+    .all(config);
 
-    if (config.length > 0) {
-      const now = new Date();
-      const timezoneOffset = now.getTimezoneOffset() * 60000; 
-      const localISOTime = new Date(now - timezoneOffset).toISOString().slice(0, 19); 
+  if (config.length > 0) {
+    const now = new Date();
+    const timezoneOffset = now.getTimezoneOffset() * 60000;
+    const localISOTime = new Date(now - timezoneOffset).toISOString().slice(0, 19);
 
-      config[0].set("value", localISOTime);
+    config[0].set("value", localISOTime);
 
-      $app.dao().saveRecord(config[0]);
+    $app.dao().saveRecord(config[0]);
 
-      console.log("La clé 'TIME' a été mise à jour avec l'heure locale actuelle:", localISOTime);
-    } else {
-      console.log("La clé 'TIME' n'a pas été trouvée dans la table config.");
-    }
+    console.log("La clé 'TIME' a été mise à jour avec l'heure locale actuelle:", localISOTime);
+  } else {
+    console.log("La clé 'TIME' n'a pas été trouvée dans la table config.");
+  }
 });
 
 routerAdd("POST", "/api/adoptFillot", (c) => {
@@ -317,10 +371,10 @@ routerAdd("POST", "/api/adoptFillot", (c) => {
       message: "Ce parrain a déjà trop de fillots."
     });
   }
-  
+
   const now = new Date($app.dao().findFirstRecordByData("config", "key", "TIME").get("value")).toISOString();;
   const shotgunDate = new Date(parrain.get("shotgunDate").toString().replace(" ", "T")).toISOString();
-  
+
   if (shotgunDate > now) {
     return c.json(400, {
       status: "error",
@@ -331,8 +385,8 @@ routerAdd("POST", "/api/adoptFillot", (c) => {
   const parrainFiliere = parrain.get("diploma").substring(0, 5);
   const fillotFiliere = fillot.get("diploma").substring(0, 5);
 
-   if (parrainFiliere !== fillotFiliere) {
-     return c.json(400, {
+  if (parrainFiliere !== fillotFiliere) {
+    return c.json(400, {
       status: "error",
       message: "Le parrain et le fillot ne sont pas dans la même filière."
     });
@@ -348,7 +402,7 @@ routerAdd("POST", "/api/adoptFillot", (c) => {
 
   fillot.set("parrain", idParrain);
   $app.dao().saveRecord(fillot);
-  
+
   return c.json(200, {
     status: "success",
     message: `Le fillot ${fillot.get("firstname")} ${fillot.get("lastname")} a été adopté par ${parrain.get("firstname")} ${parrain.get("lastname")}.`
