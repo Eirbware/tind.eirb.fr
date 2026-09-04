@@ -29,13 +29,13 @@ onRecordAuthRequest((e) => {
 
   // WARNING: Les heures sont au format UTC donc heure reel = heure + 2
   const SHOTGUN_WAVES = {
-    WEB: "2025-09-06 09:00:00",
-    BUREAU_BDE: "2025-09-15 14:50:00",
-    BDE: "2025-09-15 15:00:00",
-    BAR: "2025-09-15 15:30:00",
-    BUREAU_BAE: "2025-09-15 15:45:00",
-    BDA: "2025-09-15 16:00:00",
-    BDS: "2025-09-15 16:00:00",
+    WEB: "2026-09-14 09:00:00",
+    BUREAU_BDE: "2026-09-14 14:50:00",
+    BDE: "2026-09-14 15:00:00",
+    BAR: "2026-09-14 15:30:00",
+    BUREAU_BAE: "2026-09-14 15:45:00",
+    BDA: "2026-09-14 16:00:00",
+    BDS: "2026-09-14 16:00:00",
   }
 
   const SHOTGUNW_DATE_FOR_OTHERS = "2025-09-15 17:00:00";
