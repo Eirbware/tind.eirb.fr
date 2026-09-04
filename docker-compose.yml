@@ -1,0 +1,9 @@
+services:
+  tind:
+    build:
+      dockerfile: ./Dockerfile
+    container_name: tind
+    working_dir: /app
+    tty: true
+    ports:
+        - "6767:6767"
