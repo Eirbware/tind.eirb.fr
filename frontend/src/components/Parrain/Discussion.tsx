@@ -55,7 +55,7 @@ const Discussion: React.FC<DiscussionProps> = ({
   }, [currentTime, user.shotgunDate]);
 
   const getYear = () => {
-    return parseInt(user.diplome.substring(5, 6), 10);
+    return parseInt(user.diploma.substring(5, 6), 10);
   };
 
   const selectFillot = async (id: string) => {
