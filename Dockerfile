@@ -1,30 +1,22 @@
-FROM node:24-alpine
-
-EXPOSE 6767
+FROM library/node:24-alpine AS builder
 
 WORKDIR /app
 
+COPY package.json package-lock.json ./
+RUN npm install
+
 COPY . .
 
+ARG VITE_API_URL="https://tind.eirb.fr"
 
-# deps
-RUN apk add typescript
-
-# frontend deps
-RUN cd frontend
-RUN npm i
-
-# full deps
-RUN cd ..
-RUN npm i 
-# RUN npm i --save-dev @types/react
-# RUN npm i --save-dev @types/react-dom
-# RUN npm i --save-dev tailwindcss
-
-# build
 RUN npm run build
 
-RUN npm install -g serve
+# runtime
+FROM library/alpine:3.24
 
+WORKDIR /app
+EXPOSE 80
 
-CMD [ "./run.sh" ]
+COPY --from=builder /app/backend .
+
+CMD [ "/app/pocketbase", "serve", "--http", "0.0.0.0:80" ]
