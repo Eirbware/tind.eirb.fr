@@ -1,7 +1,7 @@
 export interface User {
   id: string;
   username: string;
-  diplome: string;
+  diploma: string;
   shotgunDate: string;
   favorites: string[];
   firstName: string;

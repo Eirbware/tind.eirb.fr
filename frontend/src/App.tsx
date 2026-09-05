@@ -16,7 +16,7 @@ const createCompleteUser = (partialUser: Partial<User> = {}): User => {
   return {
     id: partialUser.id || '',
     username: partialUser.username || '',
-    diplome: partialUser.diplome || '',
+    diploma: partialUser.diploma || '',
     shotgunDate: partialUser.shotgunDate || '',
     favorites: partialUser.favorites || [],
     firstName: partialUser.firstName || '',
@@ -43,13 +43,13 @@ function App() {
     This useEffect is triggered whenever the 'user' changes.
   */
   useEffect(() => {
-    if (isAuthenticated() && !user?.diplome) {
+    if (isAuthenticated() && !user?.diploma) {
       const storedDiplome = localStorage.getItem('userDiplome');
       if (storedDiplome) {
         const currentUser = pb.authStore.model ? createCompleteUser(pb.authStore.model) : createCompleteUser();
         setUser({
           ...currentUser,
-          diplome: storedDiplome
+          diploma: storedDiplome
         });
       }
     }
@@ -164,7 +164,7 @@ function App() {
           <div>
             {
               // Render the ParrainView if the user is a Parrain
-              isParrain(user.diplome) ? (
+              isParrain(user.diploma) ? (
                 <ParrainView
                   user={user}
                   setUser={setUser}
