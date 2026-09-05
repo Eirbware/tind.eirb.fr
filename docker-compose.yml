@@ -3,7 +3,8 @@ services:
     build:
       dockerfile: ./Dockerfile
     container_name: tind
-    working_dir: /app
-    tty: true
     ports:
-        - "6767:6767"
+      - "10086:80"
+    volumes:
+      - "/home/srv/www-tind/www-tind/data:/app/pb_data"
+
