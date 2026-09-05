@@ -37,8 +37,8 @@ const FillotView: React.FC<FillotViewProps> = ({ user, logout, pb, setUser }) =>
     Switch to an alternative form if the diploma starts with "IAE".
   */
   useEffect(() => {
-    if (user && user.diplome) {
-      setForm(user.diplome.startsWith("IAE") ? formAltTyped : formInitTyped);
+    if (user && user.diploma) {
+      setForm(user.diploma.startsWith("IAE") ? formAltTyped : formInitTyped);
     }
   }, [user]);
 

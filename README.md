@@ -11,16 +11,17 @@ afin de faire en sorte que n'importe qui puisse l'améliorer
 - Possibilité de shotgun un fillot.
 - Plusieurs vagues de shotgun en fonction de son association ou non. 
 
-## Technologies
-- Framework: React + Zustand
-- CSS: Tailwind 
-- Database: Pocketbase
+## Déploiement
 
-On a choisi PocketBase car c'est une base de donnée et un backend opensource et surtout self hostable qui fonctionne en temps réel de la même manière que FireBAse mais complétement gratuite. Pour un usage applicatif au sein de l'Enseirb-Matmeca, cela suffit largement, en septembre 2023, la quasi totalitée des 2A étaient connectés dessus en même temps et cela fonctionnait. 
+Après avoir compilé l'image docker, il faut configurer l'OIDC en accédant au chemin `/_/#/settings/auth-providers` dans l'interface admin. Puis :
 
-Puisque PocketBase est un backend, la majorité se fait sur l'interface graphique mais pour implémenter des logiques plus poussées (aka connexion par CAS), on peut écrire un script en js et en go. Le JS a été choisi, le fichier est `backend/pb_hooks/main.pb.js`
+- Cliquez sur "OpenID Connect (oidc)"
+- Remplissez "Client ID" et "Client secret", puis :
+    - Auth URL: "https://connect.vpn.eirb.fr/realms/eirb/protocol/openid-connect/auth"
+    - Token URL: "https://connect.vpn.eirb.fr/realms/eirb/protocol/openid-connect/token"
+    - User API URL: "https://connect.vpn.eirb.fr/realms/eirb/protocol/openid-connect/userinfo"
 
-Du côté de la base de données, deux tables ont étés mit en place: 
+Du côté de la base de données, deux tables ont étés mit en place:
 - users (Type: Auth) - Cette table se complète automatiquement quand un nouvel utilisateur se connecte via le CAS
   - firstName: Text
   - lastName: Text
@@ -37,6 +38,19 @@ Du côté de la base de données, deux tables ont étés mit en place:
   - 2 champs ont étés complétés: 
     - "TIME": "now" (Se met a jour via un cron dans le backend)
     - "MAX_FILLOTS": 5
+
+Normalement, les schéma sont gérés par les scripts de migrations, il faut juste rajouter les config.
+
+Finalement, il faut rajouter les images de personnes pour la page d'accuueil.
+
+## Technologies
+- Framework: React + Zustand
+- CSS: Tailwind 
+- Database: Pocketbase
+
+On a choisi PocketBase car c'est une base de donnée et un backend opensource et surtout self hostable qui fonctionne en temps réel de la même manière que FireBAse mais complétement gratuite. Pour un usage applicatif au sein de l'Enseirb-Matmeca, cela suffit largement, en septembre 2023, la quasi totalitée des 2A étaient connectés dessus en même temps et cela fonctionnait. 
+
+Puisque PocketBase est un backend, la majorité se fait sur l'interface graphique mais pour implémenter des logiques plus poussées (aka connexion par CAS), on peut écrire un script en js et en go. Le JS a été choisi, le fichier est `backend/pb_hooks/main.pb.js`
 
 > A noter que PocketBase tient en un exécutable qu'il faut télécharger depuis le site [PocketBase](https://pocketbase.io/docs/)
 > Un décalage temporel ainsi que des lenteurs sont constatés lors de l'usage de WSL.

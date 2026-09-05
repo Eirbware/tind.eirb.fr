@@ -56,7 +56,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ activeFillot, user }) => 
     return activeFillot.infos.res.map((response, index) => {
       const question = form[index];
 
-      if (question.type === 'text') {
+      if (question && question.type === 'text') {
         if (Array.isArray(question.question)) {
           return (
             <React.Fragment key={index}>
@@ -79,7 +79,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ activeFillot, user }) => 
             </React.Fragment>
           );
         }
-      } else if (question.type === 'qcm') {
+      } else if (question && question.type === 'qcm') {
         return (
           <React.Fragment key={index}>
             <LeftBubble sender="Tind'eirb" message={question.question} senderId={user.id} />
