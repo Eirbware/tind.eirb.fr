@@ -66,7 +66,8 @@ onRecordAuthRequest((e) => {
         })
       }
 
-      needsUpdate = true;
+      // NOTE: commented because we'll change those manually in the DB directly instead of using a CSV
+      // needsUpdate = true;
     }
 
     if (claims.nom_complet) {
