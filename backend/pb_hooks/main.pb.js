@@ -46,8 +46,6 @@ onRecordAuthRequest((e) => {
     const claims = e.meta.rawUser;
     let needsUpdate = false;
 
-    console.log(JSON.stringify(claims))
-
     // Map your custom claims
     if (claims.diplome) {
       e.record.set("diploma", claims.diplome);
@@ -93,8 +91,6 @@ onRecordAuthRequest((e) => {
       e.record.set("shotgunDate", shotgunDate);
       needsUpdate = true;
     }
-
-    console.log(needsUpdate, JSON.stringify(e.record));
 
     // Because v0.22 runs this hook AFTER the user is saved,
     // we must manually save the record to the database if we changed it.
