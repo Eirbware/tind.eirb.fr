@@ -38,7 +38,7 @@ onRecordAuthRequest((e) => {
     BDS: "2026-09-14 16:00:00",
   }
 
-  const SHOTGUNW_DATE_FOR_OTHERS = "2025-09-15 17:00:00";
+  const SHOTGUNW_DATE_FOR_OTHERS = "2026-09-15 17:00:00";
   const groupes = parseGroups("./pb_hooks/shotgun_groups.csv");
 
   // e.meta contains the OAuth2 provider data (if it was an OAuth2 login)
@@ -65,6 +65,7 @@ onRecordAuthRequest((e) => {
           message: "Vous n'êtes pas autorisé à vous connecter, seuls les 1A, 2A et 3A ont accès à cette application"
         })
       }
+
 
       // NOTE: commented because we'll change those manually in the DB directly instead of using a CSV
       // needsUpdate = true;
