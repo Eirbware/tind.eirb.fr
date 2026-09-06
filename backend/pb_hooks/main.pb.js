@@ -10,7 +10,7 @@ onRecordAuthRequest((e) => {
         const users = lines[i].split(',');
 
         // min() to avoid having user = undefined
-        for (let j = 0 ; j < Math.min(headers.length, users.length) ; j++) {
+        for (let j = 0; j < Math.min(headers.length, users.length); j++) {
           const user = users[j].trim();
           if (user === "")
             continue;
@@ -59,6 +59,11 @@ onRecordAuthRequest((e) => {
         "IAESE3", "IAESE4", "IAESE5"   // SEE
       ];
 
+      console.log("feur");
+      const DEROGATIONS = JSON.parse(String.fromCharCode.apply(null, $os.readFile("./pb_hooks/derogations.json")));
+      console.log("feur");
+      console.log(JSON.stringify(DEROGATIONS));
+
       if (!AUTHORIZED_DIPLOMAS.includes(claims.diplome)) {
         return c.json(403, {
           status: "error",
@@ -66,6 +71,15 @@ onRecordAuthRequest((e) => {
         })
       }
 
+      console.log("feur");
+      console.log(JSON.stringify(claims));
+      console.log(claims.preferred_username);
+
+      if (DEROGATIONS.hasOwnProperty(claims.preferred_username)) {
+        console.log(DEROGATIONS[claims.preferred_username]);
+        e.record.set("diploma", DEROGATIONS[claims.preferred_username]);
+        needsUpdate = true;
+      }
 
       // NOTE: commented because we'll change those manually in the DB directly instead of using a CSV
       // needsUpdate = true;
