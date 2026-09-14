@@ -36,10 +36,14 @@ onRecordAuthRequest((e) => {
     BUREAU_BAE: "2026-09-14 15:45:00",
     BDA: "2026-09-14 16:00:00",
     BDS: "2026-09-14 16:00:00",
+    ESSAIM: "2026-09-14 16:30:00",
   }
 
   const SHOTGUNW_DATE_FOR_OTHERS = "2026-09-15 17:00:00";
   const groupes = parseGroups("./pb_hooks/shotgun_groups.csv");
+
+  console.log("feur");
+  console.log(JSON.stringify(groupes));
 
   // e.meta contains the OAuth2 provider data (if it was an OAuth2 login)
   if (e.meta && e.meta.rawUser) {
@@ -70,10 +74,6 @@ onRecordAuthRequest((e) => {
           message: "Vous n'êtes pas autorisé à vous connecter, seuls les 1A, 2A et 3A ont accès à cette application"
         })
       }
-
-      console.log("feur");
-      console.log(JSON.stringify(claims));
-      console.log(claims.preferred_username);
 
       if (DEROGATIONS.hasOwnProperty(claims.preferred_username)) {
         console.log(DEROGATIONS[claims.preferred_username]);
