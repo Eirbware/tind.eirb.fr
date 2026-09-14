@@ -39,7 +39,7 @@ onRecordAuthRequest((e) => {
     ESSAIM: "2026-09-14 16:30:00",
   }
 
-  const SHOTGUNW_DATE_FOR_OTHERS = "2026-09-15 17:00:00";
+  const SHOTGUNW_DATE_FOR_OTHERS = "2026-09-15 18:00:00";
   const groupes = parseGroups("./pb_hooks/shotgun_groups.csv");
 
   console.log("feur");
